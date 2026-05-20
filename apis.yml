@@ -21,6 +21,8 @@ url: >-
 specificationVersion: '0.19'
 apis: []
 common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/hpsf
   - type: Documentation
     name: High Performance Software Foundation Documentation
     description: Official documentation for High Performance Software Foundation.
