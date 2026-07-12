@@ -31,6 +31,8 @@ common:
     name: High Performance Software Foundation GitHub
     description: Source code and repositories for High Performance Software Foundation.
     url: https://github.com/hpsf
+  - url: https://hpsf.io/feed/
+    type: Blog
 maintainers:
   - FN: Kin Lane
     email: info@apievangelist.com
