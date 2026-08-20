@@ -23,6 +23,11 @@ image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/hpsf.png
 tags:
   - HPC
   - Linux Foundation
+  - Open-Source
+  - Scientific Computing
+tags_raw:
+  - HPC
+  - Linux Foundation
   - Open Source
   - Scientific Computing
 created: '2026-03-16'
