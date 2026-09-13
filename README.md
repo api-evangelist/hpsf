@@ -64,14 +64,19 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-The High Performance Software Foundation (HPSF) is a Linux Foundation project supporting open source software for high-performance computing and scientific computing. It hosts projects including Apptainer, Spack, Kokkos, and E4S for building and deploying scientific applications at scale.
+The High Performance Software Foundation (HPSF) is a Linux Foundation project and neutral hub for open
+source high performance computing software, founded in 2024 and governed by a Governing Board, a
+Technical Advisory Council (TAC) and an Outreach Committee. It hosts a portable core software stack for
+HPC — including Spack, Kokkos, Apptainer, E4S, HPX, Charliecloud, Chapel, Viskores, Flux Framework and
+Wi4MPI — across Core, Established and Emerging project stages, and runs HPSFcon alongside a presence at
+SC and CppCon.
 
 **URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/hpsf/refs/heads/main/apis.yml)
 
 ## Scope
 
 - **Type:** Index
-- **Position:** Consumer
+- **Position:** Producing
 - **Access:** 3rd-Party
 
 ## Tags
@@ -80,20 +85,72 @@ The High Performance Software Foundation (HPSF) is a Linux Foundation project su
 - Linux Foundation
 - Open Source
 - Scientific Computing
+- Foundation
+- Supercomputing
+- Open Governance
+- Events
+- Conferences
+- Research Computing
+- Nonprofit
+- Content
 
 ## Timestamps
 
 - **Created:** 2026-03-16
-- **Modified:** 2026-04-28
+- **Modified:** 2026-09-13
 
 ## APIs
 
-No public REST APIs have been documented for HPSF directly. HPSF is a foundation hosting open source projects rather than offering a public API surface.
+HPSF runs no developer program — no portal, no API key, no SDK, no documentation page — but `hpsf.io`
+is a machine-readable surface in its own right, and an earlier version of this profile recorded it as
+having none. What it actually publishes, all verified live on 2026-09-13:
+
+- **An RFC 9727 `/.well-known/api-catalog`** linkset (HTTP 200, `application/linkset+json`) anchoring
+  the WordPress REST API at `https://hpsf.io/wp-json/`. Confirmed a real document rather than a
+  catch-all: every other well-known path, including a negative-control path that cannot exist, 404s.
+- **Two live OpenAPI documents the host serves itself** — `/wp-json/tribe/events/v1/doc` (OpenAPI
+  3.0.0, 14 paths / 30 operations) and `/wp-json/tec/v1/docs` (OpenAPI 3.0.4, 8 paths / 17
+  operations). Both name `https://hpsf.io` in `servers[]`.
+- **An `llms.txt`** (HTTP 200) listing HPSF's posts, pages, projects, venues, organizers, events and
+  project stages.
+- **A Content Signals directive in `robots.txt`** — `ai-train=yes, search=yes, ai-input=yes` — HPSF's
+  own machine-readable AI usage preference.
+- **An RFC 5545 iCalendar feed** at `/events/?ical=1`, which for a calendar consumer is the most
+  directly useful thing on the host.
+
+Three API entries are recorded: the **HPSF Events API** (`tribe/events/v1`, anonymous and keyless —
+the events, venues and organizers behind HPSFcon), the **HPSF Events Calendar TEC v1 API**
+(`tec/v1`, contract published but vendor-flagged experimental), and the **HPSF Site Discovery API**
+(the `/wp-json/` route index).
+
+Two honest negatives are recorded alongside them, because both are advertised and neither works:
+
+- **`wp/v2` is declared in the namespace list at `/wp-json/` and is absent from that same document's
+  route map.** Every `wp/v2` path returns `rest_no_route` 404. The WordPress content API is not served
+  on this installation.
+- **Every `tec/v1` route returns HTTP 400 `missing_experimental_endpoint_acknowledgement`** to an
+  anonymous caller, and the required header is named neither in the contract the host serves nor
+  anywhere on hpsf.io. The richer of the two contracts describes a surface a third party cannot invoke.
+
+HPSF publishes no SDK, no CLI, no MCP server, no agent card, no webhook surface and no `security.txt`.
+The contracts are authored by The Events Calendar plugin rather than by HPSF; they are recorded as
+HPSF's because `servers[]` names HPSF's own host and the data described is HPSF's own — the
+self-hosted case, not a sibling-product mix-up.
 
 ## Common Properties
 
+- [Website](https://www.hpsf.io/)
 - [Documentation](https://hpsf.io/projects/)
-- [GitHub Organization](https://github.com/hpsf)
+- [API Reference (live OpenAPI)](https://hpsf.io/wp-json/tribe/events/v1/doc)
+- [GitHub Organization](https://github.com/hpsfoundation)
+- [Blog](https://hpsf.io/blog/)
+- [TAC / Governance](https://hpsf.io/tac/)
+- [Charter](https://github.com/hpsfoundation/foundation/blob/main/charter.md)
+- [Join / Membership](https://hpsf.io/join/)
+
+> Note: `https://github.com/hpsf` is an empty placeholder organization with zero repositories and is
+> **not** HPSF's. This profile previously pointed at it; the real org is
+> [`hpsfoundation`](https://github.com/hpsfoundation).
 
 ## Maintainers
 

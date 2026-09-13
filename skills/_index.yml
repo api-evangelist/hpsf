@@ -1,0 +1,36 @@
+generated: '2026-09-13'
+method: generated
+source: >-
+  Grounded in openapi/hpsf-events-api-openapi.yml, openapi/hpsf-tec-events-api-openapi.yml and live
+  anonymous calls against https://hpsf.io/wp-json/ on 2026-09-13. Every path, field name, status code
+  and record count referenced in these skills was read from the wire or from a contract the host
+  itself serves. Nothing is invented.
+note: >-
+  HPSF publishes no AGENTS.md and no skills of its own - probed /AGENTS.md, /.well-known/ and the
+  llms.txt, all absent - so these are API Evangelist generations over a third-party-profiled surface,
+  not provider-published skills. All three are read-only, because the entire anonymously reachable
+  surface is read-only: there is no write, no reversal and no idempotency concern to teach.
+  The tribe/events/v1 contract declares no operationId for any operation, so operations are referenced
+  by method and path rather than by id.
+skills:
+- name: hpsf-track-conferences
+  file: hpsf-track-conferences.md
+  api: hpsf:hpsf-events-api
+  operations: ['GET /events', 'GET /events/{id}', 'GET /events/by-slug/{slug}']
+  summary: >-
+    Track HPSFcon, SC and CppCon from the foundation's own JSON API, and defeat the silent
+    today-forward date window that hides every past event.
+- name: hpsf-map-venues
+  file: hpsf-map-venues.md
+  api: hpsf:hpsf-events-api
+  operations: ['GET /venues', 'GET /venues/{id}', 'GET /venues/by-slug/{slug}', 'GET /organizers', 'GET /events']
+  summary: >-
+    Build the geography of where HPSF meets from the 15-venue geocoded collection and join it back to
+    the events held there.
+- name: hpsf-discover-surface
+  file: hpsf-discover-surface.md
+  api: hpsf:hpsf-site-discovery-api
+  operations: ['GET /wp-json/', 'GET /.well-known/api-catalog', 'GET /llms.txt', 'GET /wp-json/tribe/events/v1/doc', 'GET /wp-json/tec/v1/docs']
+  summary: >-
+    Walk the api-catalog to the route index to the live contracts, and learn which advertised
+    namespaces (wp/v2, tec/v1, wp-abilities/v1) do not answer before spending calls on them.

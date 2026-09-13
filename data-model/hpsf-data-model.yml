@@ -1,0 +1,119 @@
+generated: '2026-09-13'
+method: derived
+source: >-
+  components.schemas and the id-reference fields in openapi/hpsf-events-api-openapi.yml and
+  openapi/hpsf-tec-events-api-openapi.yml, cross-checked against live responses from
+  https://hpsf.io/wp-json/tribe/events/v1/* on 2026-09-13.
+name: HPSF events data model
+description: >-
+  Four addressable entities and four value objects. Everything on this surface is an event or something
+  an event points at. Identifiers are site-local WordPress post ids (integers) - they are not stable
+  across installations, which is exactly why every record also carries global_id and
+  global_id_lineage, the plugin's federation identifiers of the form "hpsf.io?id=714".
+entities:
+- name: Event
+  collection: /events
+  identifier: id
+  alternate_identifiers: [global_id, slug]
+  addressable_by: ['/events/{id}', '/events/by-slug/{slug}']
+  live_count: 2
+  count_observed_at: '2026-09-13'
+  key_fields: [title, description, excerpt, start_date, end_date, utc_start_date, utc_end_date, timezone,
+    all_day, cost, cost_details, website, url, image, featured, sticky, hide_from_listings, status]
+  note: >-
+    Dates are published twice - as a local string, as a UTC string, and again decomposed into a
+    DateDetails object of year/month/day/hour/minutes/seconds. An agent should read utc_start_date and
+    ignore the decomposed form.
+- name: Venue
+  collection: /venues
+  identifier: id
+  alternate_identifiers: [global_id, slug]
+  addressable_by: ['/venues/{id}', '/venues/by-slug/{slug}']
+  live_count: 15
+  count_observed_at: '2026-09-13'
+  key_fields: [venue, address, city, province, state, stateprovince, zip, country, phone, website, geo_lat,
+    geo_lng, show_map]
+  note: >-
+    Carries geo_lat/geo_lng, so the HPSF conference venue set is a geocoded dataset. Fifteen venues
+    against two currently-listed events - the venue collection is the historical record of where HPSF
+    has met, and is the more interesting half of this API.
+- name: Organizer
+  collection: /organizers
+  identifier: id
+  alternate_identifiers: [global_id, slug]
+  addressable_by: ['/organizers/{id}', '/organizers/by-slug/{slug}']
+  key_fields: [organizer, description, phone, website, email]
+  note: Contains an email field. See the PII note below.
+- name: Term
+  collections: [/categories, /tags]
+  identifier: id
+  alternate_identifiers: [slug]
+  addressable_by: ['/categories/{id}', '/tags/{id}']
+  live_count: 0
+  count_observed_at: '2026-09-13'
+  key_fields: [name, slug, taxonomy, description, parent, count, url]
+  note: >-
+    Both taxonomies are registered and callable but empty on this installation - GET /categories
+    returned total 0. The classification surface exists and is unused.
+value_objects:
+- name: Image
+  fields: [url, id, extension, width, height, sizes]
+  note: sizes is a map of named size to ImageSize.
+- name: ImageSize
+  fields: [width, height, mime-type, url]
+- name: DateDetails
+  fields: [year, month, day, hour, minutes, seconds]
+- name: CostDetails
+  fields: [currency_symbol, 'currency_position ', values]
+  note: >-
+    The property name "currency_position " carries a trailing space in the contract the host publishes.
+    Recorded verbatim; a client that trims it will not find the field.
+relationships:
+- from: Event
+  to: Venue
+  cardinality: has_one
+  via: venue
+  note: Embedded as a full Venue object in the response, not as a bare id.
+- from: Event
+  to: Organizer
+  cardinality: has_many
+  via: organizer
+- from: Event
+  to: Term
+  cardinality: has_many
+  via: categories
+  taxonomy: tribe_events_cat
+- from: Event
+  to: Term
+  cardinality: has_many
+  via: tags
+  taxonomy: post_tag
+- from: Term
+  to: Term
+  cardinality: belongs_to
+  via: parent
+  note: Categories are hierarchical; parent is 0 at the root.
+- from: Event
+  to: Image
+  cardinality: has_one
+  via: image
+- from: Venue
+  to: Image
+  cardinality: has_one
+  via: image
+- from: Organizer
+  to: Image
+  cardinality: has_one
+  via: image
+identifier_notes:
+- >-
+  global_id / global_id_lineage exist so an event syndicated between Events Calendar installations can
+  be traced to its origin. Lineage is an array; the first element is the originating site.
+- >-
+  Numeric ids are WordPress post ids and are shared across the whole site's post table, so an Event id
+  and a page id come from the same sequence.
+pii_note: >-
+  The Organizer entity exposes phone and email. On this installation the single organizer is HPSF
+  itself rather than a named individual, but the schema is capable of publishing a person's contact
+  details anonymously and any consumer should treat organizer records accordingly.
+renders: []

@@ -1,0 +1,58 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//High Performance Software Foundation (HPSF) - ECPv6.17.4.1//NONSGML v1.0//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:High Performance Software Foundation (HPSF)
+X-ORIGINAL-URL:https://hpsf.io
+X-WR-CALDESC:Events for High Performance Software Foundation (HPSF)
+REFRESH-INTERVAL;VALUE=DURATION:PT1H
+X-Robots-Tag:noindex
+X-PUBLISHED-TTL:PT1H
+BEGIN:VTIMEZONE
+TZID:UTC
+BEGIN:STANDARD
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0000
+TZNAME:UTC
+DTSTART:20250101T000000
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20260912
+DTEND;VALUE=DATE:20260919
+DTSTAMP:20260811T192149Z
+CREATED:20260811T192149Z
+LAST-MODIFIED:20260811T192149Z
+UID:10000020-1789171200-1789775999@hpsf.io
+SUMMARY:CppCon
+DESCRIPTION:HPSF will be exhibiting at CppCon. \nCppCon is the annual\, week-long face-to-face gathering for the entire C++ community. The conference is organized by the C++ community for the community.
+URL:https://hpsf.io/event/cppcon/
+LOCATION:Aurora\, Colorado\, Aurora\, CO\, United States
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20261115
+DTEND;VALUE=DATE:20261121
+DTSTAMP:20251205T180520Z
+CREATED:20251205T180344Z
+LAST-MODIFIED:20251205T180520Z
+UID:10000016-1794700800-1795219199@hpsf.io
+SUMMARY:SC26
+DESCRIPTION:SC is where the high performance computing community convenes for an exhilarating week of sessions\, speakers\, and networking at its finest.  It is an unparalleled mix of thousands of scientists\, engineers\, researchers\, educators\, programmers\, and developers who intermingle to learn\, share\, and grow. \nHPSF plans to participate in SC26. Stay tuned for more details!
+URL:https://hpsf.io/event/sc26/
+LOCATION:Chicago\, IL\, Chicago\, United States
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20270412
+DTEND;VALUE=DATE:20270417
+DTSTAMP:20260729T175739Z
+CREATED:20260729T175431Z
+LAST-MODIFIED:20260729T175739Z
+UID:10000019-1807488000-1807919999@hpsf.io
+SUMMARY:HPSF Conference 2027
+DESCRIPTION:Save the date for HPSF Conference 2027\nApril 12-16\, 2027 \nMontreal\, Canada \n#HPSFcon \n  \n 
+URL:https://hpsf.io/event/hpsf-conference-2027/
+LOCATION:Montreal\, Montreal\, Canada
+ATTACH;FMTTYPE=image/jpeg:https://hpsf.io/wp-content/uploads/sites/18/2025/05/HPSFCon-2025-scaled.jpg
+END:VEVENT
+END:VCALENDAR

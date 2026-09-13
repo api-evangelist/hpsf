@@ -1,0 +1,104 @@
+generated: '2026-09-13'
+method: searched
+source: live GET probes of the closed /.well-known/ path list on both hpsf.io hosts
+note: >-
+  hpsf.io serves a real RFC 9727 /.well-known/api-catalog linkset. It is a genuine document, not a
+  catch-all 200: every other path on the closed list returns HTTP 404 with the site's WordPress 404
+  template, and the negative-control path returns 404 as well, so this host does not echo paths and
+  does not soft-200. The linkset anchors the WordPress REST API at https://hpsf.io/wp-json/ and
+  points service-doc at developer.wordpress.org.
+path_echo_control: passed
+hit_count: 1
+hosts:
+- host: https://hpsf.io
+  documents:
+  - path: /.well-known/api-catalog
+    status: 200
+    content_type: application/linkset+json
+    file: hpsf-api-catalog.json
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/hpsf-negative-control-7f3ab91c.json
+    status: 404
+    note: negative control - a path that cannot exist; the 404 confirms the host is not path-echoing
+- host: https://www.hpsf.io
+  documents:
+  - path: /.well-known/api-catalog
+    status: 200
+    content_type: application/linkset+json
+    file: hpsf-api-catalog.json
+    note: same document as the apex host; www.hpsf.io and hpsf.io serve identical bodies
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/hpsf-negative-control-7f3ab91c.json
+    status: 404
+    note: negative control
+api_catalog:
+  anchor: https://hpsf.io/wp-json/
+  service_desc:
+  - https://hpsf.io/wp-json/
+  service_doc:
+  - https://developer.wordpress.org/rest-api/
+  status:
+  - https://hpsf.io
+content_signal:
+  source: https://hpsf.io/robots.txt
+  status: 200
+  file: hpsf-robots.txt
+  directive: 'Content-Signal: ai-train=yes, search=yes, ai-input=yes'
+  note: >-
+    hpsf.io publishes a machine-readable AI usage preference in robots.txt using the Content Signals
+    Policy vocabulary, granting AI training, search indexing and AI input. Recorded verbatim; this is
+    the provider's own stated preference, not our interpretation of it.

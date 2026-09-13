@@ -1,0 +1,82 @@
+generated: '2026-09-13'
+method: derived
+source: >-
+  Derived from the operations in openapi/hpsf-events-api-openapi.yml after searching for a published
+  MCP server and finding none.
+name: HPSF MCP server (candidate)
+status: candidate
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: none
+  verified: searched
+  note: >-
+    Nobody ships an MCP server for this surface - not HPSF, not the plugin vendor. mode is `none`
+    because this file is a derived candidate, and no endpoint URL is invented. The pointer in apis.yml
+    is X-MCPServerCandidate, not MCPServer, so this is not credited as an agent surface HPSF operates.
+search:
+  looked_for:
+  - A hosted/remote MCP endpoint on hpsf.io or any subdomain
+  - An MCP reference anywhere in the 15 namespaces at https://hpsf.io/wp-json/
+  - An MCP package under the HPSF GitHub organization (github.com/hpsfoundation, 6 repos)
+  - An MCP mention in https://hpsf.io/llms.txt
+  found: none
+  evidence:
+  - {url: 'https://hpsf.io/.well-known/api-catalog', status: 200, note: 'The linkset names exactly one service - the WordPress REST API. No MCP endpoint is advertised.'}
+  - {url: 'https://hpsf.io/llms.txt', status: 200, note: 'Lists posts, pages, projects, venues, organizers and events. No tools section, no MCP endpoint.'}
+  - {url: 'https://hpsf.io/wp-json/wp-abilities/v1/abilities', status: 401, note: 'The WordPress Abilities registry is installed - the closest thing on this host to a machine-callable tool catalog - but it is authentication-gated, so its contents could not be read and nothing is asserted about them.'}
+candidate_tools:
+- name: hpsf_list_events
+  description: List HPSF conferences and events, optionally filtered by date window, search string, venue or organizer.
+  rest: GET /events
+  source_operation: 'openapi/hpsf-events-api-openapi.yml paths./events.get'
+  input_fields: [page, per_page, start_date, end_date, search, categories, tags, venue, organizer, status]
+  note: >-
+    A tool built on this operation MUST pass start_date explicitly. Omitting it silently restricts
+    results to today through today+2 years, which would make historical HPSFcon events invisible to an
+    agent with no indication that a filter was applied.
+- name: hpsf_get_event
+  description: Fetch one HPSF event by id.
+  rest: GET /events/{id}
+  source_operation: 'openapi/hpsf-events-api-openapi.yml paths./events/{id}.get'
+- name: hpsf_get_event_by_slug
+  description: Fetch one HPSF event by slug, e.g. sc26.
+  rest: GET /events/by-slug/{slug}
+- name: hpsf_list_venues
+  description: List the venues HPSF has met at, with city, state, country and coordinates.
+  rest: GET /venues
+- name: hpsf_get_venue
+  description: Fetch one venue by id.
+  rest: GET /venues/{id}
+- name: hpsf_list_organizers
+  description: List event organizers.
+  rest: GET /organizers
+- name: hpsf_get_organizer
+  description: Fetch one organizer by id.
+  rest: GET /organizers/{id}
+- name: hpsf_list_event_categories
+  description: List event categories. Registered but empty on this installation as of 2026-09-13.
+  rest: GET /categories
+- name: hpsf_list_event_tags
+  description: List event tags. Registered but empty on this installation as of 2026-09-13.
+  rest: GET /tags
+excluded_from_candidate_set:
+- surface: 'every tec/v1 operation'
+  reason: >-
+    Returns 400 missing_experimental_endpoint_acknowledgement anonymously, so no tool could be
+    invoked. Excluded rather than listed as a tool that does not work.
+- surface: 'every write operation (POST/PUT/PATCH/DELETE) on both contracts'
+  reason: >-
+    Requires a WordPress Application Password with no public issuance path. A write tool here would be
+    uninvokable by any agent outside HPSF's web team.
+- surface: 'wp/v2, wp-abilities/v1, activity-log/v1, objectcache/v1, liquidweb/harbor/v1, regenerate-thumbnails/v1, wp-site-health/v1, tec/v2/onboarding, tribe/zapier/v1, tribe/power-automate/v1, tribe/event-aggregator/v1'
+  reason: >-
+    wp/v2 returns rest_no_route 404 on every path; the rest are site-administration or integration
+    plugin routes gated to a logged-in administrator. None is a public product surface.
+notes:
+- >-
+  The honest agent path to this data today is not MCP. It is the anonymous REST collection at
+  https://hpsf.io/wp-json/tribe/events/v1/events, or - for a calendar consumer - the RFC 5545 feed at
+  https://hpsf.io/events/?ical=1, which needs no code at all.

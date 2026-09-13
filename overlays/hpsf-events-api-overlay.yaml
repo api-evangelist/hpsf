@@ -1,0 +1,93 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the HPSF Events API
+  version: 1.0.0
+extends: ../openapi/hpsf-events-api-openapi.yml
+x-provenance:
+  generated: '2026-09-13'
+  method: derived
+  source: >-
+    Live probes of https://hpsf.io/wp-json/tribe/events/v1/* on 2026-09-13, plus the repo artifacts in
+    conventions/, errors/, data-model/ and rate-limits/.
+  note: >-
+    The original document is published verbatim by hpsf.io and is never mutated. Every action below is
+    an annotation we add on top of it, recording behaviour observed on the wire that the contract does
+    not state.
+actions:
+- target: $.info
+  update:
+    x-api-evangelist-ownership: >-
+      servers[] names https://hpsf.io/wp-json/tribe/events/v1/ - the foundation's own host, describing
+      HPSF's own conference, venue and organizer records. The document is authored by The Events
+      Calendar plugin rather than by HPSF, which is the self-hosted/templated-server case, not a
+      sibling-product mix-up. No info.contact is present in this document at all.
+    x-api-evangelist-harvest:
+      url: https://hpsf.io/wp-json/tribe/events/v1/doc
+      status: 200
+      fetched: '2026-09-13'
+- target: $.info
+  update:
+    x-api-evangelist-anonymous-read: >-
+      Every GET in this document was verified callable with no credential on 2026-09-13. The write
+      half requires WordPress Application Passwords, for which HPSF publishes no third-party path.
+- target: $.paths['/events'].get
+  update:
+    x-api-evangelist-implicit-date-window: >-
+      UNDOCUMENTED BEHAVIOUR. A request with neither start_date nor end_date is not unbounded - the
+      server applies start_date=<today> 00:00:00 and end_date=<today+2 years> 23:59:59 and reports the
+      applied filter back in the response's rest_url. Past events are invisible unless start_date is
+      set explicitly. Observed 2026-09-13.
+    x-api-evangelist-pagination: >-
+      Pagination is returned in the JSON body (total, total_pages, rest_url, next_rest_url) and in
+      X-TEC-Total / X-TEC-TotalPages response headers. The Access-Control-Expose-Headers list on this
+      host names X-WP-Total / X-WP-TotalPages instead, which are not the headers sent, so a browser
+      client should read the body.
+    x-api-evangelist-per-page-clamping: >-
+      per_page above the declared maximum of 100 is clamped, not rejected - per_page=9999 returned
+      HTTP 200 with a bounded page on 2026-09-13.
+    x-api-evangelist-field-selection: >-
+      The WordPress _fields convenience does NOT work on this route. ?_fields=id,title returned an
+      empty JSON array rather than a trimmed collection. Responses are all-or-nothing.
+- target: $.paths['/events/{id}'].get
+  update:
+    x-api-evangelist-error: >-
+      A missing id returns HTTP 404 with code rest-event-not-found in the WordPress error envelope
+      { code, message, data.status }, not RFC 9457 problem+json. See errors/hpsf-problem-types.yml.
+- target: $.components.schemas.Event
+  update:
+    x-api-evangelist-identifiers: >-
+      id is a site-local WordPress post id drawn from the same sequence as pages and posts, so it is
+      not stable across installations. global_id ("hpsf.io?id=714") and global_id_lineage are the
+      federation identifiers to key on.
+    x-api-evangelist-date-guidance: >-
+      Each date is published three ways - a local string, a UTC string, and a decomposed
+      year/month/day/hour/minutes/seconds object. Read utc_start_date / utc_end_date and ignore the
+      decomposed form.
+- target: $.components.schemas.CostDetails
+  update:
+    x-api-evangelist-field-name-defect: >-
+      The property is published as "currency_position " with a trailing space. Recorded because a
+      client that trims key names will not find the field. This is the upstream plugin's defect, not
+      HPSF's, and is not corrected here - the original document is left verbatim.
+- target: $.components.schemas.Venue
+  update:
+    x-api-evangelist-dataset-note: >-
+      15 venues were live on 2026-09-13 against 2 listed events, each carrying city/state/country and
+      optional geo_lat/geo_lng. This collection is the geographic history of HPSF's meetings and is
+      the most substantive data on the host.
+- target: $.components.schemas.Organizer
+  update:
+    x-api-evangelist-pii: >-
+      phone and email are part of this schema and are served anonymously when populated. On hpsf.io the
+      single organizer is the foundation itself and neither field is filled, but a consumer should
+      treat organizer records as potentially personal data.
+- target: $.paths
+  update:
+    x-api-evangelist-rate-limits: >-
+      No rate-limit headers of any kind on any observed response, and no published limits. The only
+      backpressure signal is cache-control public max-age=604800 at the Fastly edge, which also means
+      a response may be up to seven days stale with no ETag or Last-Modified to revalidate against.
+    x-api-evangelist-idempotency: >-
+      No Idempotency-Key mechanism. Not a gap: the anonymously reachable surface is entirely GET, so
+      idempotency, dry-run and reversibility are all `na` rather than zero. See
+      conventions/hpsf-conventions.yml.

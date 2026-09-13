@@ -1,0 +1,66 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the HPSF Events Calendar TEC v1 API
+  version: 1.0.0
+extends: ../openapi/hpsf-tec-events-api-openapi.yml
+x-provenance:
+  generated: '2026-09-13'
+  method: derived
+  source: >-
+    Live probes of https://hpsf.io/wp-json/tec/v1/* on 2026-09-13, the contract the host serves at
+    /wp-json/tec/v1/docs, and the upstream plugin source that raises the gate
+    (the-events-calendar/tribe-common, TEC\Common\REST\TEC\V1\Exceptions\ExperimentalEndpointException).
+  note: The original document is published verbatim by hpsf.io and is never mutated.
+actions:
+- target: $.info
+  update:
+    x-api-evangelist-ownership: >-
+      servers[] names https://hpsf.io/wp-json/tec/v1 - HPSF's own host, describing HPSF's own event,
+      venue, organizer and series records. info.contact names The Events Calendar
+      (support@theeventscalendar.com) because the PLUGIN authors this description document, not the
+      foundation. This is the self-hosted/templated-server case; the spec belongs to HPSF's
+      installation even though the vendor wrote the prose.
+    x-api-evangelist-harvest:
+      url: https://hpsf.io/wp-json/tec/v1/docs
+      status: 200
+      fetched: '2026-09-13'
+- target: $.info
+  update:
+    x-api-evangelist-not-anonymously-callable: >-
+      THE CENTRAL CAVEAT. Every route in this document returned HTTP 400
+      missing_experimental_endpoint_acknowledgement to an anonymous GET on 2026-09-13, and /series
+      returned 401. The endpoints are vendor-flagged experimental and gated behind an acknowledgement
+      header whose name appears nowhere in this contract and nowhere on hpsf.io; four plausible header
+      names were tried and all were rejected identically. The contract is published and is the richer
+      of the two on this host - named operationIds, a declared securityScheme, documented response
+      headers - and it describes a surface a third party cannot currently invoke. Use
+      tribe/events/v1 instead.
+- target: $.paths['/events'].get
+  update:
+    x-api-evangelist-observed:
+      url: https://hpsf.io/wp-json/tec/v1/events?page=1&per_page=1
+      status: 400
+      code: missing_experimental_endpoint_acknowledgement
+- target: $.paths['/series'].get
+  update:
+    x-api-evangelist-observed:
+      url: https://hpsf.io/wp-json/tec/v1/series?page=1
+      status: 401
+      note: >-
+        Recurring series are additionally permission-gated. HPSF runs no recurring event series on this
+        installation that is visible anonymously.
+- target: $.components.securitySchemes.BasicAuth
+  update:
+    x-api-evangelist-credential-path: >-
+      WordPress Application Passwords, issued from
+      https://hpsf.io/wp-admin/authorize-application.php to an existing site user. There is no public
+      onboarding path, so the entire write surface of this contract is unreachable from outside HPSF's
+      own web team.
+- target: $.paths
+  update:
+    x-api-evangelist-error-model: >-
+      Bodies use the WordPress envelope { code, message, data.status }, not RFC 9457 problem+json,
+      despite this contract declaring 400/401/403/404/410/500/501 response classes. 410 Gone is used to
+      mean "already trashed" and 501 to mean "this post type will not trash - re-issue with
+      force=true", which together imply a recoverable trash state that HPSF documents no retention
+      window for. See conventions/hpsf-conventions.yml reversibility.

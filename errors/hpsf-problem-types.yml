@@ -1,0 +1,88 @@
+generated: '2026-09-13'
+method: derived
+source: >-
+  4xx/5xx responses declared in openapi/hpsf-events-api-openapi.yml and
+  openapi/hpsf-tec-events-api-openapi.yml (both harvested verbatim from hpsf.io), plus error bodies
+  observed live on anonymous calls to https://hpsf.io/wp-json/ on 2026-09-13.
+name: HPSF error catalog
+format: wordpress-rest
+rfc9457: false
+media_type: application/json
+envelope:
+  shape: '{ "code": "<machine_code>", "message": "<human message>", "data": { "status": <http_status>, "params": [...] } }'
+  note: >-
+    Not RFC 9457. There is no application/problem+json media type anywhere on this surface and no
+    type/title/detail/instance member. The machine-readable discriminator is the top-level `code`
+    string; the HTTP status is duplicated inside `data.status`.
+observed_errors:
+- code: rest_no_route
+  http_status: 404
+  title: No route was found matching the URL and request method
+  observed_at: https://hpsf.io/wp-json/wp/v2/posts
+  remediation: >-
+    Do not assume the wp/v2 namespace is callable on this host. It is advertised in the /wp-json/
+    namespace list but every wp/v2 route returns this error. Read the route index and call only the
+    namespaces whose routes appear in it.
+- code: missing_experimental_endpoint_acknowledgement
+  http_status: 400
+  title: Experimental endpoint requires acknowledgement header
+  observed_at: https://hpsf.io/wp-json/tec/v1/events
+  remediation: >-
+    Every tec/v1 route returns this anonymously. The plugin (The Events Calendar 6.9.0+,
+    TEC\Common\REST\TEC\V1\Exceptions\ExperimentalEndpointException) gates the namespace behind an
+    acknowledgement header whose name is documented in neither the OpenAPI document the host serves
+    nor any HPSF page. Use the stable tribe/events/v1 surface instead.
+- code: rest-event-not-found
+  http_status: 404
+  title: Event with the specified ID does not exist
+  observed_at: https://hpsf.io/wp-json/tribe/events/v1/events/99999999
+  remediation: Fetch a valid id from GET /events first; ids are site-local WordPress post ids.
+- code: rest_missing_callback_param
+  http_status: 400
+  title: Missing required parameter
+  observed_at: POST https://hpsf.io/wp-json/tribe/events/v1/events
+  note: >-
+    An unauthenticated POST is rejected on missing parameters (title, start_date, end_date) BEFORE
+    the permission check, so a 400 here does not mean the call would have been authorized.
+  remediation: Supply the required body parameters; then expect 403 without an Application Password.
+- code: rest_forbidden
+  http_status: 401
+  title: Sorry, you are not allowed to do that
+  observed_at: https://hpsf.io/wp-json/wp-abilities/v1/abilities
+  remediation: >-
+    The WordPress Abilities registry is registered on this install but administrative. It requires a
+    WordPress credential HPSF publishes no process for a third party to obtain.
+declared_status_classes:
+- status: 400
+  meaning: A required parameter is missing, or a query variable has a bad format.
+  sources: [openapi/hpsf-events-api-openapi.yml, openapi/hpsf-tec-events-api-openapi.yml]
+- status: 401
+  meaning: Not logged in.
+  sources: [openapi/hpsf-tec-events-api-openapi.yml]
+- status: 403
+  meaning: Authenticated but not permitted to create, update or delete the resource.
+  sources: [openapi/hpsf-events-api-openapi.yml, openapi/hpsf-tec-events-api-openapi.yml]
+- status: 404
+  meaning: The event, venue, organizer, category, tag or page does not exist.
+  sources: [openapi/hpsf-events-api-openapi.yml, openapi/hpsf-tec-events-api-openapi.yml]
+- status: 410
+  meaning: >-
+    The resource has already been trashed. Notable - this surface uses 410 Gone to distinguish
+    "already deleted" from "never existed", which most WordPress surfaces collapse into 404.
+  sources: [openapi/hpsf-events-api-openapi.yml, openapi/hpsf-tec-events-api-openapi.yml]
+- status: 500
+  meaning: The delete or update failed server-side.
+  sources: [openapi/hpsf-events-api-openapi.yml, openapi/hpsf-tec-events-api-openapi.yml]
+- status: 501
+  meaning: >-
+    The post type does not support trashing; the caller must re-issue with force=true to delete
+    permanently. Declared only by the tec/v1 contract.
+  sources: [openapi/hpsf-tec-events-api-openapi.yml]
+notes:
+- >-
+  The two contracts published by this host disagree on one point of substance - tec/v1 declares 401
+  for an unauthenticated call and tribe/events/v1 does not declare 401 at all, going straight to 403.
+  Recorded rather than reconciled, because both documents are the provider's own.
+- >-
+  No error is documented on any hpsf.io page. Everything here is read off the wire or out of the two
+  contracts the host serves; HPSF publishes no developer documentation.

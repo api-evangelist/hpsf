@@ -1,0 +1,176 @@
+generated: '2026-09-13'
+method: probed
+source: >-
+  Anonymous live calls against https://hpsf.io/wp-json/ on 2026-09-13. Every request and response
+  below was actually issued and actually returned; nothing here is illustrative.
+name: HPSF API examples
+note: >-
+  Neither contract the host serves carries in-spec examples for its responses, so these were captured
+  from the wire. Payloads are trimmed to the fields that matter for a caller; the omission is marked
+  where it happens.
+examples:
+- id: list-events
+  summary: List the HPSF event calendar
+  request:
+    method: GET
+    url: https://hpsf.io/wp-json/tribe/events/v1/events?per_page=1
+    auth: none
+  response:
+    status: 200
+    headers:
+      content-type: application/json; charset=UTF-8
+      x-tec-total: '2'
+      x-tec-totalpages: '2'
+      cache-control: public, max-age=604800
+    body_envelope:
+      rest_url: https://hpsf.io/wp-json/tribe/events/v1/events/?page=1&per_page=1&start_date=2026-09-13 00:00:00&end_date=2028-09-13 23:59:59&status=publish
+      next_rest_url: https://hpsf.io/wp-json/tribe/events/v1/events/?per_page=1&start_date=2026-09-13+00%3A00%3A00&end_date=2028-09-13+23%3A59%3A59&status=publish&page=2
+      total: 2
+      total_pages: 2
+    first_item:
+      id: 714
+      global_id: hpsf.io?id=714
+      status: publish
+      url: https://hpsf.io/event/sc26/
+      title: SC26
+      slug: sc26
+      all_day: true
+      start_date: '2026-11-15 00:00:00'
+      end_date: '2026-11-20 23:59:59'
+      utc_start_date: '2026-11-15 00:00:00'
+      timezone: UTC+0
+      timezone_abbr: UTC+0
+      cost: ''
+      website: https://sc26.supercomputing.org/
+      featured: false
+      organizer: []
+      note: >-
+        Fields omitted here for length - description, excerpt, image, the four *_details date objects,
+        cost_details, categories, tags, venue, sticky, hide_from_listings.
+  lesson: >-
+    The date window in rest_url was supplied by the server, not the caller. An /events request with no
+    dates is silently bounded to today through today+2 years, so past events are invisible unless
+    start_date is passed explicitly. Read rest_url to learn what filter you actually got.
+- id: list-venues
+  summary: The geocoded record of where HPSF has met
+  request:
+    method: GET
+    url: https://hpsf.io/wp-json/tribe/events/v1/venues?per_page=1
+    auth: none
+  response:
+    status: 200
+    body_envelope: {total: 15, total_pages: 15}
+    first_item:
+      id: 967
+      global_id: hpsf.io?id=967
+      status: publish
+      url: https://hpsf.io/venue/aurora-colorado/
+      venue: Aurora, Colorado
+      slug: aurora-colorado
+      city: Aurora
+      state: CO
+      stateprovince: CO
+      country: United States
+      show_map: true
+      show_map_link: true
+  lesson: >-
+    Fifteen venues against two currently-listed events. The venue collection is the durable half of
+    this API - it is the historical geography of HPSF and HPSFcon, not just decoration on an event.
+- id: list-organizers
+  summary: The organizer collection
+  request:
+    method: GET
+    url: https://hpsf.io/wp-json/tribe/events/v1/organizers?per_page=1
+    auth: none
+  response:
+    status: 200
+    body_envelope: {total: 1}
+    first_item:
+      id: 253
+      organizer: HPSF
+      slug: hpsf
+      url: https://hpsf.io/organizer/hpsf/
+      global_id: hpsf.io?id=253
+  lesson: >-
+    One organizer - HPSF itself. The schema allows phone and email on an organizer; neither is
+    populated here.
+- id: empty-taxonomy
+  summary: A registered but empty taxonomy
+  request:
+    method: GET
+    url: https://hpsf.io/wp-json/tribe/events/v1/categories
+    auth: none
+  response:
+    status: 200
+    body: {rest_url: https://hpsf.io/wp-json/tribe/events/v1/categories/, total: 0, total_pages: 0, categories: []}
+  lesson: >-
+    Callable and empty. A 200 with total 0 is the correct answer here, not an error - do not treat it
+    as a failure.
+- id: event-not-found
+  summary: Asking for an event that does not exist
+  request:
+    method: GET
+    url: https://hpsf.io/wp-json/tribe/events/v1/events/99999999
+    auth: none
+  response:
+    status: 404
+    body: {code: rest-event-not-found, message: Event with ID 99999999 does not exist., data: {status: 404}}
+  lesson: The error envelope is the WordPress shape, not RFC 9457. Branch on the `code` string.
+- id: unauthenticated-write
+  summary: What a write attempt actually returns
+  request:
+    method: POST
+    url: https://hpsf.io/wp-json/tribe/events/v1/events
+    auth: none
+    body: none
+  response:
+    status: 400
+    body: {code: rest_missing_callback_param, message: 'Missing parameter(s): title, start_date, end_date', data: {status: 400, params: [title, start_date, end_date]}}
+  lesson: >-
+    Parameter validation runs BEFORE the permission check, so this 400 is not permission feedback. A
+    well-formed body would then be rejected for lack of an Application Password, which HPSF publishes
+    no way for a third party to obtain.
+- id: disabled-namespace
+  summary: The content API that is advertised but not served
+  request:
+    method: GET
+    url: https://hpsf.io/wp-json/wp/v2/posts?per_page=1
+    auth: none
+  response:
+    status: 404
+    body: {code: rest_no_route, message: No route was found matching the URL and request method., data: {status: 404}}
+  lesson: >-
+    wp/v2 appears in the namespaces array at /wp-json/ but has no entry in that same document's routes
+    map, and every wp/v2 path 404s. Trust the routes map, not the namespace list.
+- id: experimental-namespace
+  summary: A published contract you cannot call
+  request:
+    method: GET
+    url: https://hpsf.io/wp-json/tec/v1/events?page=1&per_page=1
+    auth: none
+  response:
+    status: 400
+    body: {code: missing_experimental_endpoint_acknowledgement, message: Experimental endpoint requires acknowledgement header., data: {status: 400}}
+  lesson: >-
+    The richer of the two OpenAPI documents on this host describes a surface that rejects anonymous
+    callers on a header it does not name. Four plausible header names were tried and all returned the
+    same 400. Use tribe/events/v1.
+- id: icalendar-feed
+  summary: The same calendar in the format its domain speaks
+  request:
+    method: GET
+    url: https://hpsf.io/events/?ical=1
+    auth: none
+  response:
+    status: 200
+    content_type: text/calendar; charset=UTF-8
+    body_head: |
+      BEGIN:VCALENDAR
+      VERSION:2.0
+      PRODID:-//High Performance Software Foundation (HPSF) - ECPv6.17.4.1//NONSGML v1.0//EN
+      CALSCALE:GREGORIAN
+      METHOD:PUBLISH
+    file: hpsf-events.ics
+  lesson: >-
+    A consumer that speaks iCalendar needs no code at all to follow HPSF's conference calendar. This is
+    the most directly useful thing this host publishes.

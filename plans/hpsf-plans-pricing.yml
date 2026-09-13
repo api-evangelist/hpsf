@@ -1,0 +1,59 @@
+generated: '2026-09-13'
+method: searched
+source: >-
+  https://hpsf.io/join/ (membership page and FAQ), the site sitemap at https://hpsf.io/wp-sitemap.xml,
+  and https://enrollment.lfx.linuxfoundation.org/?project=hpsf
+name: HPSF plans and pricing
+plan_count: 0
+plans: []
+description: >-
+  HPSF publishes no API plans and no API pricing, because it sells no API. The events surface on
+  hpsf.io is free, anonymous and keyless, with no sign-up, no key issuance and no metering. What HPSF
+  does sell is organizational membership in a Linux Foundation project, at three named tiers - Premier,
+  General and Associate - and the dues for those tiers are not published on the site either; the join
+  path is an LFX enrollment form. Recorded as plan_count 0 rather than as three plans, because
+  membership tiers buy governance seats and marketing visibility, not API access, and conflating them
+  would misrepresent both.
+membership_tiers:
+  note: >-
+    Recorded for completeness. These are NOT API plans and are deliberately excluded from plan_count.
+  published_prices: false
+  tiers:
+  - name: Premier
+    includes: >-
+      Highest visibility, a tailored marketing amplification plan, and seats on the Governing Board,
+      the TAC and the Outreach Committee.
+    price: null
+    price_note: Dues not published on hpsf.io.
+  - name: General
+    includes: >-
+      Governance participation through an elected representative seat, full access to community forums,
+      events and member marketing benefits.
+    price: null
+    price_note: Dues not published on hpsf.io.
+  - name: Associate
+    includes: Participation scaled to level of investment.
+    price: null
+    price_note: Dues not published on hpsf.io.
+  project_path:
+    name: Join as a Project
+    note: >-
+      A separate, non-monetary path. Projects submit a proposal to the TAC repository and are approved
+      against the published lifecycle policy; there is no fee.
+    url: https://github.com/hpsfoundation/tac
+evidence:
+- url: https://hpsf.io/join/
+  status: 200
+  note: >-
+    Names Premier, General and Associate and answers "what does my membership fee support" without
+    stating any figure.
+- url: https://enrollment.lfx.linuxfoundation.org/?project=hpsf
+  status: 200
+  note: LFX enrollment form - the actual join path. Dues are quoted through it, not on the site.
+- url: https://hpsf.io/wp-json/tribe/events/v1/events?per_page=1
+  status: 200
+  note: The API itself is free and anonymous - no key, no account, no quota.
+notes:
+- >-
+  Recorded as an explicit zero rather than omitted, so the absence is legible as a measured fact rather
+  than as a step this pipeline skipped.

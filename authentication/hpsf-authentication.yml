@@ -1,0 +1,83 @@
+generated: '2026-09-13'
+method: searched
+source: >-
+  https://hpsf.io/wp-json/ (the route index, which declares the Application Passwords authorization
+  endpoint), the BasicAuth securityScheme in the tec/v1 contract at https://hpsf.io/wp-json/tec/v1/docs,
+  and live anonymous calls against every namespace on 2026-09-13.
+name: HPSF authentication
+summary:
+  types:
+  - none
+  - http
+  anonymous_read: true
+  api_keys: false
+  oauth2: false
+  oidc: false
+  mtls: false
+schemes:
+- name: Anonymous
+  type: none
+  applies_to:
+  - GET https://hpsf.io/wp-json/
+  - GET https://hpsf.io/wp-json/tribe/events/v1/events
+  - GET https://hpsf.io/wp-json/tribe/events/v1/venues
+  - GET https://hpsf.io/wp-json/tribe/events/v1/organizers
+  - GET https://hpsf.io/wp-json/tribe/events/v1/categories
+  - GET https://hpsf.io/wp-json/tribe/events/v1/tags
+  - GET https://hpsf.io/wp-json/tribe/events/v1/doc
+  - GET https://hpsf.io/wp-json/tec/v1/docs
+  note: >-
+    No credential of any kind is required to read the events surface or either contract. Verified with
+    unauthenticated GETs returning HTTP 200 on 2026-09-13.
+- name: BasicAuth
+  type: http
+  scheme: basic
+  header: 'Authorization: Basic <base64 username:application-password>'
+  declared_in: openapi/hpsf-tec-events-api-openapi.yml
+  mechanism: WordPress Application Passwords
+  authorization_endpoint: https://hpsf.io/wp-admin/authorize-application.php
+  authorization_endpoint_source: >-
+    Declared by the host itself in the authentication block of https://hpsf.io/wp-json/
+  applies_to: All POST/PUT/PATCH/DELETE operations across tribe/events/v1 and tec/v1.
+  public_onboarding: false
+  note: >-
+    Application Passwords are issued from inside the WordPress admin to an existing site user. HPSF
+    publishes no process for a third party to obtain one, so the write half of both contracts is
+    documented but unreachable from outside the foundation's own web team.
+gated_surfaces:
+- namespace: wp-abilities/v1
+  status: 401
+  code: rest_forbidden
+  note: >-
+    The WordPress Abilities registry is installed and registered on this host. An anonymous GET of
+    /wp-json/wp-abilities/v1/abilities returns 401 - the ability list, which is the closest thing this
+    host has to a machine-callable tool catalog, requires an authenticated WordPress user.
+- namespace: tec/v1
+  status: 400
+  code: missing_experimental_endpoint_acknowledgement
+  note: >-
+    Not an authentication gate. The namespace is fenced behind an undocumented acknowledgement header
+    for experimental endpoints, and rejects anonymous callers before any credential is considered.
+- namespaces: [activity-log/v1, objectcache/v1, liquidweb/harbor/v1, regenerate-thumbnails/v1, wp-site-health/v1, tec/v2/onboarding, tribe/event-aggregator/v1, tribe/zapier/v1, tribe/power-automate/v1]
+  note: >-
+    Site-administration and integration plugin routes, all permission-gated to a logged-in WordPress
+    administrator. Present in the route index; not a public API surface.
+absent:
+  api_key_header: null
+  oauth_scopes: null
+  note: >-
+    scopes/ is deliberately not written. There is no oauth2 securityScheme in either contract and no
+    OAuth documented anywhere, so an OAuthScopes artifact would be an empty claim.
+evidence:
+- url: https://hpsf.io/wp-json/tribe/events/v1/events?per_page=1
+  status: 200
+  note: Anonymous read succeeded with no credential.
+- url: https://hpsf.io/wp-json/
+  status: 200
+  note: 'authentication block names application-passwords with its authorization endpoint.'
+- url: https://hpsf.io/wp-json/wp-abilities/v1/abilities
+  status: 401
+- url: https://hpsf.io/.well-known/oauth-authorization-server
+  status: 404
+- url: https://hpsf.io/.well-known/openid-configuration
+  status: 404

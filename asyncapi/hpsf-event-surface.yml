@@ -1,0 +1,69 @@
+generated: '2026-09-13'
+method: probed
+source: >-
+  Probes of https://hpsf.io/asyncapi.yaml, /asyncapi.json, the 15 namespaces in the route index at
+  https://hpsf.io/wp-json/, and the two integration contracts the host serves at
+  /wp-json/tribe/zapier/v1/doc and /wp-json/tribe/power-automate/v1/doc, on 2026-09-13.
+name: HPSF event and streaming surface
+asyncapi_present: false
+webhooks_present: false
+description: >-
+  HPSF publishes no AsyncAPI document and operates no webhook surface. There is no callback
+  registration, no subscription endpoint and no event delivery of any kind: nothing on this host will
+  ever call you back. What does exist is a pair of POLLING trigger namespaces installed by The Events
+  Calendar for Zapier and Microsoft Power Automate - a consumer asks them "what changed" on a
+  schedule, which is the opposite direction of a webhook. Both are credential-gated and neither is
+  usable by a third party.
+  No AsyncAPI or Webhooks pointer is emitted in apis.yml. Emitting one would credit HPSF with an event
+  surface it does not operate, and the distinction between "the API pushes to you" and "you poll the
+  API" is exactly what that pointer is supposed to record.
+polling_trigger_namespaces:
+- namespace: tribe/zapier/v1
+  contract: https://hpsf.io/wp-json/tribe/zapier/v1/doc
+  contract_status: 200
+  contract_note: >-
+    OpenAPI 3.0.0, 1154 bytes, two paths (/doc and /authorize). servers[] names
+    https://hpsf.io/wp-json/tribe/events/v1/ - it describes a connection handshake, not a data API.
+  saved_to: openapi/_source/hpsf-tribe-zapier-v1-doc.json
+  trigger_routes:
+  - {path: /wp-json/tribe/zapier/v1/new-events, observed_status: 400, code: rest_missing_callback_param, note: 'Requires an access_token query parameter.'}
+  - {path: /wp-json/tribe/zapier/v1/updated-events, note: 'Same access_token gate.'}
+  - {path: /wp-json/tribe/zapier/v1/canceled-events, note: 'Same access_token gate.'}
+  - {path: /wp-json/tribe/zapier/v1/find-events, note: 'Same access_token gate.'}
+  auth: >-
+    POST /authorize with consumer_id and consumer_secret, issued from inside the WordPress admin.
+    There is no public path to a consumer credential.
+- namespace: tribe/power-automate/v1
+  contract: https://hpsf.io/wp-json/tribe/power-automate/v1/doc
+  contract_status: 200
+  contract_note: >-
+    OpenAPI 3.0.0, 428 bytes, one path (/doc) and an empty schemas list. The contract documents
+    nothing but itself.
+  saved_to: openapi/_source/hpsf-tribe-power-automate-v1-doc.json
+  trigger_routes:
+  - {path: /wp-json/tribe/power-automate/v1/new-events, observed_status: 401, code: rest_forbidden}
+  - {path: /wp-json/tribe/power-automate/v1/updated-events, note: 'Same permission gate.'}
+  - {path: /wp-json/tribe/power-automate/v1/canceled-events, note: 'Same permission gate.'}
+- namespace: tribe/event-aggregator/v1
+  note: >-
+    Inbound import machinery - it pulls events into this site from elsewhere. Both routes are POST and
+    administrator-gated. Not an outbound event surface.
+what_an_agent_should_use_instead:
+  polling:
+    url: https://hpsf.io/wp-json/tribe/events/v1/events
+    note: >-
+      Anonymous, keyless. Compare modified_utc client-side against a watermark; there is no
+      modified_after filter on this surface.
+  feeds:
+  - {url: 'https://hpsf.io/events/?ical=1', format: 'RFC 5545 iCalendar', status: 200}
+  - {url: 'https://hpsf.io/events/feed/', format: 'RSS 2.0', status: 200}
+  - {url: 'https://hpsf.io/feed/', format: 'RSS 2.0', status: 200, note: 'Site-wide blog feed.'}
+  note: >-
+    For a calendar consumer the iCalendar feed is the real answer - it is a subscription, it needs no
+    code and no credential, and it is the format the events domain already speaks.
+evidence:
+- {url: 'https://hpsf.io/asyncapi.yaml', status: 404}
+- {url: 'https://hpsf.io/asyncapi.json', status: 404}
+- {url: 'https://hpsf.io/wp-json/tribe/zapier/v1/new-events', status: 400}
+- {url: 'https://hpsf.io/wp-json/tribe/power-automate/v1/new-events', status: 401}
+- {url: 'https://hpsf.io/wp-json/', status: 200, note: 'No webhook, subscription or callback route among the 99 routes.'}

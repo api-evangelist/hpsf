@@ -1,0 +1,82 @@
+generated: '2026-09-13'
+method: searched
+source: >-
+  https://github.com/hpsfoundation/tac/blob/main/lifecycle_policy.md, https://hpsf.io/tac/,
+  https://hpsf.io/projects/, the route index at https://hpsf.io/wp-json/, and the two contracts the
+  host serves.
+name: HPSF lifecycle
+api_lifecycle:
+  versioning:
+    style: path-namespace
+    current: tribe/events/v1
+    policy_published: false
+    note: >-
+      The version is a URL namespace supplied by the WordPress plugin that generates the surface. HPSF
+      publishes no API versioning policy of its own, and there is no version header or negotiation.
+  deprecation_policy:
+    published: false
+    sunset_header: false
+    deprecation_header: false
+    observed: >-
+      No Sunset and no Deprecation header on any response observed on 2026-09-13, and no deprecation
+      or retirement statement anywhere on hpsf.io. No Deprecation pointer is emitted in apis.yml.
+  deprecated_operations: []
+  status_page:
+    published: false
+    probed:
+    - {url: 'https://hpsf.io/.well-known/api-catalog', status: 200, note: 'The linkset carries a status link, but it points at https://hpsf.io - the homepage, not a status service.'}
+    note: >-
+      No status page exists. The api-catalog status link resolves to the site homepage, which reports
+      nothing about availability. No StatusPage pointer is emitted.
+  sla:
+    published: false
+  support_channel_for_api:
+    published: false
+    note: >-
+      HPSF's support paths - the Linux Foundation help center, the community Slack and the contact
+      page - are for the foundation and its projects. None of them is an API support channel and none
+      of them mentions the API.
+  observed_instability:
+    - surface: wp/v2
+      finding: >-
+        Advertised in the namespace list returned by /wp-json/ but absent from the route index, and
+        every wp/v2 path returns rest_no_route 404. The site announces a content API it does not serve.
+    - surface: tec/v1
+      finding: >-
+        Vendor-flagged experimental. Every route returns 400
+        missing_experimental_endpoint_acknowledgement anonymously, and the required header is named in
+        neither the contract the host serves nor any HPSF page. It is a published contract for a
+        surface a caller cannot invoke.
+project_lifecycle:
+  note: >-
+    HPSF does publish a formal, versioned lifecycle policy - for its PROJECTS, not for its API. It is
+    recorded here because it is the real lifecycle governance this organization operates, and because
+    a reader looking for "does HPSF publish a lifecycle policy" should find the honest answer to both
+    questions in one place.
+  policy_url: https://github.com/hpsfoundation/tac/blob/main/lifecycle_policy.md
+  governing_body: HPSF Technical Advisory Council (TAC)
+  governance_url: https://hpsf.io/tac/
+  stages:
+  - name: Core
+    url: https://hpsf.io/projects_stage/core/
+  - name: Established
+    url: https://hpsf.io/projects_stage/established/
+  - name: Emerging
+    url: https://hpsf.io/projects_stage/emerging/
+  entry_path: >-
+    Projects submit a proposal to the TAC repository and are approved by the Technical Advisory
+    Council against the published lifecycle policy.
+  recent_movement:
+  - {project: Flux Framework, event: joined HPSF, date: '2026-06-16', source: 'https://hpsf.io/blog/2026/high-performance-software-foundation-welcomes-flux-framework-as-a-new-project/'}
+  - {project: Wi4MPI, event: joined HPSF, date: '2026-06-23', source: 'https://hpsf.io/blog/2026/high-performance-software-foundation-welcomes-wi4mpi-as-a-new-project/'}
+evidence:
+- url: https://github.com/hpsfoundation/tac/blob/main/lifecycle_policy.md
+  status: 200
+- url: https://hpsf.io/tac/
+  status: 200
+- url: https://hpsf.io/wp-json/wp/v2/posts
+  status: 404
+  note: rest_no_route - the advertised wp/v2 namespace is not served.
+- url: https://hpsf.io/wp-json/tec/v1/events
+  status: 400
+  note: missing_experimental_endpoint_acknowledgement.

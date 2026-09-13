@@ -1,0 +1,138 @@
+generated: '2026-09-13'
+method: derived
+source: >-
+  Live probes of https://hpsf.io/wp-json/* on 2026-09-13 (response headers, error bodies, pagination
+  behaviour), the route index the host serves at /wp-json/, and the two OpenAPI documents it publishes
+  at /wp-json/tribe/events/v1/doc and /wp-json/tec/v1/docs. HPSF publishes no developer documentation,
+  so nothing below comes from a docs page - every convention was read off the wire or out of a contract
+  the host itself serves.
+auth_style:
+  anonymous_read: true
+  scheme: none for reads on tribe/events/v1; HTTP Basic (WordPress Application Passwords) for writes
+  header: 'Authorization: Basic <base64 user:application-password>'
+  declared_scheme: 'components.securitySchemes.BasicAuth (http/basic) in the tec/v1 contract'
+  note: >-
+    No API key, no OAuth, no OIDC. See authentication/hpsf-authentication.yml. There is no public
+    onboarding path to a write credential.
+pagination:
+  style: page-number
+  params:
+  - {name: page, default: 1, minimum: 1}
+  - {name: per_page, default: 10, minimum: 1, maximum: 100}
+  body_fields:
+  - {name: total, meaning: total items in the unpaginated collection}
+  - {name: total_pages, meaning: total pages at the requested per_page}
+  - {name: rest_url, meaning: the fully-resolved URL of the current page, with defaults filled in}
+  - {name: next_rest_url, meaning: ready-to-call URL for the next page}
+  response_headers:
+  - {name: X-TEC-Total, meaning: total items - the events surface uses the X-TEC-* prefix, not X-WP-*}
+  - {name: X-TEC-TotalPages, meaning: total pages}
+  cors_exposed: 'Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages, Link'
+  observed: >-
+    GET /wp-json/tribe/events/v1/events?per_page=1 returned X-TEC-Total 2, X-TEC-TotalPages 2 and a
+    body carrying total, total_pages, rest_url and next_rest_url on 2026-09-13.
+  divergence_note: >-
+    The CORS expose list names X-WP-Total / X-WP-TotalPages, but the events routes actually emit
+    X-TEC-Total / X-TEC-TotalPages. A browser client reading the exposed list will not see the headers
+    that are actually sent. Pagination in the JSON body is the reliable signal on this host.
+  agent_guidance: >-
+    Follow next_rest_url rather than constructing page URLs. It is absolute and carries the defaulted
+    date window the server applied.
+field_selection:
+  param: _fields
+  supported: false
+  observed: >-
+    GET /wp-json/tribe/events/v1/events?per_page=1&_fields=id,title returned an empty JSON array. The
+    WordPress _fields, _embed and _envelope conveniences are core-REST features; they do not apply to
+    the tribe/events/v1 routes on this host, and the wp/v2 routes that would support them are disabled.
+    Responses are all-or-nothing.
+filtering:
+  search: '?search=<string> on /events (observed HTTP 200)'
+  date_windows: [start_date, end_date]
+  default_window: >-
+    An /events call with no dates is silently bounded. The server filled in
+    start_date=<today> 00:00:00 and end_date=<today+2y> 23:59:59 and reported it back in rest_url on
+    2026-09-13. A caller that does not read rest_url will not know a window was applied, and past
+    events are invisible unless start_date is set explicitly.
+  status: '?status=publish is applied by default'
+  taxonomy: '?categories= and ?tags= by term id'
+  relations: '?venue= and ?organizer= by post id'
+error_envelope:
+  format: wordpress-rest
+  media_type: application/json
+  rfc9457: false
+  shape: '{ "code": "<machine_code>", "message": "<human message>", "data": { "status": <int>, "params": [...] } }'
+  note: See errors/hpsf-problem-types.yml.
+rate_limit_signaling:
+  headers: none
+  note: >-
+    No X-RateLimit-*, no RateLimit-*, no Retry-After on any observed response. See
+    rate-limits/hpsf-rate-limits.yml.
+caching:
+  headers_observed: [cache-control, age, via, x-cache, x-served-by, vary, accept-ranges]
+  observed_example: 'GET /wp-json/tribe/events/v1/events returned cache-control: public, max-age=604800 with age: 287 and x-cache: MISS, HIT, MISS, MISS.'
+  edge: Fastly (Varnish) in front of Pantheon (x-pantheon-styx-hostname).
+  conditional_requests: >-
+    No ETag and no Last-Modified was observed on the JSON routes, so conditional requests are not
+    usable. The seven-day public max-age means an agent may be served a week-stale event list.
+request_id_tracing:
+  header: x-styx-req-id
+  note: >-
+    A Pantheon platform request id, not an application request id. HPSF exposes no correlation id it
+    can look up for a caller, and publishes no support channel for the API.
+versioning:
+  style: path-namespace
+  current: tribe/events/v1
+  other_namespaces: ['tec/v1', 'tec/v2/onboarding', 'tribe/views/v2', 'tribe/zapier/v1', 'tribe/power-automate/v1',
+    'tribe/event-aggregator/v1', 'wp/v2', 'wp-abilities/v1', 'wp-site-health/v1', 'wp-block-editor/v1',
+    'objectcache/v1', 'activity-log/v1', 'liquidweb/harbor/v1', 'regenerate-thumbnails/v1']
+  note: >-
+    Version lives in the URL namespace; there is no version header and no negotiation. The list is
+    discoverable from /wp-json/. It is an inventory of installed plugins as much as an API design -
+    activity-log, objectcache, liquidweb/harbor and regenerate-thumbnails are site-administration
+    routes, not a public product surface, and all are permission-gated.
+  wp_v2_absent: >-
+    wp/v2 is declared in the namespace list but is not present in the route index and every wp/v2 path
+    returns rest_no_route 404. The advertised content API does not exist on this installation.
+idempotency:
+  coverage: na
+  supported: na
+  scope: []
+  note: >-
+    Not applicable to the reachable surface. Every anonymously callable operation on this host is a GET
+    and therefore naturally idempotent; no Idempotency-Key header is accepted, documented or observed,
+    and none is needed because there is no anonymous write surface to double-fire. NO Idempotency
+    pointer is emitted in apis.yml - emitting one would credit HPSF with a replay-safety mechanism it
+    does not publish.
+dry_run_mode:
+  supported: na
+  note: Read-only public surface; there is nothing to rehearse.
+reversibility:
+  applicable: false
+  grade: na
+  write_surface: none-public
+  note: >-
+    The publicly reachable surface is read-only, so no action an agent can take through it needs taking
+    back. Write operations (POST/PUT/DELETE on events, venues, organizers, categories and tags) are
+    declared in both contracts and do exist behind WordPress Application Passwords, and the contracts
+    even model a two-stage delete - a 410 Gone for "already trashed" and, in tec/v1, a 501 telling the
+    caller to re-issue with force=true - which implies a recoverable trash state. But HPSF publishes no
+    retention period, no restore operation and no window for it, and there is no public path to a write
+    credential at all. Reversibility is therefore honestly `na` rather than zero, and no window is
+    asserted, because none is stated anywhere.
+  surfaces: []
+experimental_surface:
+  namespace: tec/v1
+  behaviour: >-
+    Every tec/v1 route returns HTTP 400 missing_experimental_endpoint_acknowledgement anonymously; the
+    required header name is documented in neither the OpenAPI document the host serves nor anywhere on
+    hpsf.io. The contract is published, richer than the stable one (named operationIds, declared
+    BasicAuth, response headers), and not anonymously callable as written.
+  guidance: Use tribe/events/v1 for anything an agent needs to call today.
+cross_links:
+  errors: errors/hpsf-problem-types.yml
+  lifecycle: lifecycle/hpsf-lifecycle.yml
+  authentication: authentication/hpsf-authentication.yml
+  rate_limits: rate-limits/hpsf-rate-limits.yml
+  conformance: conformance/hpsf-conformance.yml
+  data_model: data-model/hpsf-data-model.yml

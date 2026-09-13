@@ -1,0 +1,48 @@
+# High Performance Software Foundation (HPSF)
+
+## Posts
+- [Why Collaboration Matters More Than Ever in High Performance Computing](https://hpsf.io/blog/2026/why-collaboration-matters-more-than-ever-in-high-performance-computing/): The future of high performance computing is getting more complex by the day. Hardware architectures are evolving rapidly, AI is
+- [Why Join HPSF? A Guide to Membership in the High Performance Software Foundation](https://hpsf.io/blog/2026/why-join-hpsf-a-guide-to-membership-in-the-high-performance-software-foundation/): High performance computing is no longer confined to national labs and supercomputing centers. As AI, accelerated computing, and cloud-based HPC
+- [High Performance Software Foundation Welcomes Wi4MPI as a New Project](https://hpsf.io/blog/2026/high-performance-software-foundation-welcomes-wi4mpi-as-a-new-project/): We’re excited to welcome Wi4MPI to the High Performance Software Foundation! Wi4MPI is an open source tool designed to improve
+- [Chapel 2.9 Released](https://hpsf.io/blog/2026/chapel-2-9-released/): We’re happy to report that Chapel 2.9 is being released today!  This new version of Chapel continues the project’s goals of making scalable parallel programming more productive, accessible, and portable.
+- [High Performance Software Foundation Welcomes Flux Framework as a New Project](https://hpsf.io/blog/2026/high-performance-software-foundation-welcomes-flux-framework-as-a-new-project/): We’re excited to welcome Flux Framework to the High Performance Software Foundation! Flux Framework is an open source, modern resource management and scheduling framework for managing diverse workloads at scale from containers to the world's largest compute resources.
+
+## Pages
+- [Join](https://hpsf.io/join/): Influence the direction of the HPSF community and projects through becoming a member. Influence the direction of the HPSF community
+- [TAC](https://hpsf.io/tac/): The HPSF Technical Advisory Council (TAC) facilitates communication and collaboration among HPSF technical projects. The HPSF TAC is responsible for:
+- [Projects](https://hpsf.io/projects/): Join as a Project Grow your project through open governance and integration into a world-wide community Leverage a community connecting
+- [About](https://hpsf.io/about/): The High Performance Software Foundation (HPSF) is a neutral hub for open source high performance software. By increasing adoption, aiding
+- [Home](https://hpsf.io/): The High Performance Software Foundation (HPSF) is a neutral hub for open source high performance software. HPSF supports projects that
+
+## Projects
+- [Kokkos](https://hpsf.io/projects/kokkos/)
+- [Wi4MPI](https://hpsf.io/projects/wi4mpi/)
+- [HPX](https://hpsf.io/projects/hpx/)
+- [Flux Framework](https://hpsf.io/projects/flux-framework/)
+- [Apptainer](https://hpsf.io/projects/apptainer/)
+
+## Venues
+- [Aurora, Colorado](https://hpsf.io/venue/aurora-colorado/)
+- [Montreal](https://hpsf.io/venue/montreal/)
+- [University of Bern & PHBern](https://hpsf.io/venue/university-of-bern-phbern/)
+- [Technical University of Braunschweig](https://hpsf.io/venue/technical-university-of-braunschweig/)
+- [Maison de la Simulation (MdlS)](https://hpsf.io/venue/saclay-gif-sur-yvette/)
+
+## Organizers
+- [HPSF](https://hpsf.io/organizer/hpsf/)
+
+## Events
+- [CppCon](https://hpsf.io/event/cppcon/): HPSF will be exhibiting at CppCon. CppCon is the annual, week-long face-to-face gathering for the entire C++ community. The conference
+- [HPSF Conference 2027](https://hpsf.io/event/hpsf-conference-2027/): Save the date for HPSF Conference 2027 April 12-16, 2027 Montreal, Canada #HPSFcon &nbsp; &nbsp;
+- [SC26](https://hpsf.io/event/sc26/): SC is where the high performance computing community convenes for an exhilarating week of sessions, speakers, and networking at its
+
+## Categories
+- [Blog](https://hpsf.io/category/blog/)
+
+## Projects Stages
+- [Established](https://hpsf.io/projects_stage/established/)
+- [Emerging](https://hpsf.io/projects_stage/emerging/)
+- [Core](https://hpsf.io/projects_stage/core/)
+
+## Optional
+- [Sitemap index](https://hpsf.io/wp-sitemap.xml)

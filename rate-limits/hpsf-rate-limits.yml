@@ -1,0 +1,59 @@
+generated: '2026-09-13'
+method: probed
+source: >-
+  Response headers observed on anonymous GETs against https://hpsf.io/wp-json/ and
+  https://hpsf.io/wp-json/tribe/events/v1/* on 2026-09-13, plus a search of hpsf.io for a limits,
+  fair-use or API terms page.
+name: HPSF rate limits
+limit_count: 0
+limits: []
+description: >-
+  HPSF documents no rate limits and returns no rate-limit headers. There is no developer portal, no API
+  terms of use and no fair-use page anywhere on hpsf.io - the only terms linked from the site are the
+  Linux Foundation's general terms, which say nothing about API calls. Whatever throttling exists is
+  imposed by the Fastly/Pantheon hosting layer and is invisible to a caller, so an agent calling this
+  host has no runtime signal to back off on and must self-pace.
+response_headers:
+  rate_limit_headers_returned: []
+  standard_headers_checked: [X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, RateLimit-Limit,
+    RateLimit-Remaining, RateLimit-Reset, RateLimit-Policy, Retry-After]
+  observed_headers: [server, date, content-type, vary, x-robots-tag, x-content-type-options, access-control-expose-headers,
+    access-control-allow-headers, x-tec-total, x-tec-totalpages, link, allow, cache-control, age, via,
+    x-cache, x-cache-hits, x-served-by, x-timer, x-styx-req-id, x-pantheon-styx-hostname, strict-transport-security,
+    accept-ranges]
+  exhaustion_status: null
+  note: None of the standard limit headers was present on any observed response.
+edge_backpressure:
+  cdn: Fastly (Varnish) fronting Pantheon
+  cache_control: 'public, max-age=604800'
+  note: >-
+    The only real throttling signal on this surface is the cache. A seven-day public max-age means most
+    repeat calls are answered from an edge node rather than the origin, which protects HPSF but also
+    means an agent can be served a week-old event list without any indication that it is stale. There
+    is no ETag and no Last-Modified, so a caller cannot revalidate cheaply.
+paging_limits:
+  per_page_max: 100
+  per_page_default: 10
+  enforcement: >-
+    Declared as maximum 100 in both contracts. Observed to be clamped rather than rejected - a request
+    for per_page=9999 returned HTTP 200 with a bounded page, not a 400.
+  note: >-
+    This is the only enforced numeric ceiling found anywhere on the surface. It bounds a single
+    response, not a request rate, and is recorded here so it is not mistaken for one.
+evidence:
+- url: https://hpsf.io/wp-json/tribe/events/v1/events?per_page=1
+  status: 200
+  note: Full response header dump carried no rate-limit header of any form.
+- url: https://hpsf.io/wp-json/
+  status: 200
+  note: Route index declares no throttling policy and no rate-limit extension on any of its 99 routes.
+- url: https://hpsf.io/robots.txt
+  status: 200
+  note: 'Two Disallow/Allow lines and a Content-Signal directive. No Crawl-delay.'
+- url: https://www.linuxfoundation.org/legal/terms
+  status: 200
+  note: General LF site terms; no API rate or fair-use clause.
+notes:
+- >-
+  Recorded as an explicit zero rather than omitted. An honest zero is data; a missing file would read
+  as a step this pipeline did not run.

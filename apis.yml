@@ -1,34 +1,49 @@
 aid: hpsf
 name: High Performance Software Foundation
 description: >-
-  The High Performance Software Foundation (HPSF) is a Linux Foundation project
-  supporting open source software for high-performance computing and scientific
-  computing. It hosts projects including Apptainer, Spack, Kokkos, and E4S for
-  building and deploying scientific applications at scale.
+  The High Performance Software Foundation (HPSF) is a Linux Foundation project and neutral hub for
+  open source high performance computing software, founded in 2024 and governed by a Governing Board,
+  a Technical Advisory Council (TAC) and an Outreach Committee. HPSF hosts and supports a portable
+  core software stack for HPC - including Spack, Kokkos, Apptainer, E4S, HPX, Charliecloud, Chapel,
+  Viskores, Flux Framework and Wi4MPI - across Core, Established and Emerging project stages, and runs
+  HPSFcon alongside a presence at SC and CppCon. Organizations join at Premier, General or Associate
+  tier; projects apply to the TAC. HPSF publishes no developer program and ships no SDKs, but hpsf.io
+  is a machine-readable surface in its own right: it serves an RFC 9727 /.well-known/api-catalog
+  linkset, an llms.txt, a Content-Signal AI usage preference in robots.txt, and two live OpenAPI
+  documents describing a publicly callable events API covering HPSF conferences, venues, organizers
+  and event taxonomies. The WordPress wp/v2 content routes are advertised in the namespace list but
+  are disabled on this installation.
 type: Index
 deliveryModel:
-  model: unknown
-  open_source: false
+  model: open-source-foundation
+  open_source: true
   commercial: false
-  callable_host: false
-  label: Delivery model not determined — needs a product licence on record
-  confidence: low
+  callable_host: true
+  label: >-
+    Nonprofit Linux Foundation project; no commercial product. The only callable host is hpsf.io,
+    which serves an anonymous read-only events API alongside the foundation website.
+  confidence: medium
   source:
-  - none
-  generated: '2026-08-28'
+  - https://hpsf.io/about/
+  - https://hpsf.io/wp-json/tribe/events/v1/doc
+  generated: '2026-09-13'
   method: derived
 accessModel:
-  pricing: unknown
-  onboarding: unknown
+  pricing: free
+  onboarding: none
   trial: false
-  try_now: false
-  public: false
-  label: Unknown
-  confidence: low
-  source: []
-  generated: '2026-07-22'
-  method: derived
-position: Consuming
+  try_now: true
+  public: true
+  label: >-
+    Anonymous, keyless read access. GET https://hpsf.io/wp-json/tribe/events/v1/events returns 200
+    with no credential. Writes require WordPress Application Passwords, which are not offered to the
+    public.
+  confidence: medium
+  source:
+  - https://hpsf.io/wp-json/tribe/events/v1/events
+  generated: '2026-09-13'
+  method: probed
+position: Producing
 access: 3rd-Party
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/hpsf.png
 tags:
@@ -36,32 +51,263 @@ tags:
   - Linux Foundation
   - Open-Source
   - Scientific Computing
+  - Foundation
+  - Supercomputing
+  - Open-Governance
+  - Events
+  - Conferences
+  - Research-Computing
+  - Nonprofit
+  - Content
 tags_raw:
   - HPC
   - Linux Foundation
   - Open Source
   - Scientific Computing
+  - Foundation
+  - Supercomputing
+  - Open Governance
+  - Events
+  - Conferences
+  - Research Computing
+  - Nonprofit
+  - Content
 created: '2026-03-16'
-modified: '2026-04-28'
+modified: '2026-09-13'
 url: >-
   https://raw.githubusercontent.com/api-evangelist/hpsf/refs/heads/main/apis.yml
 specificationVersion: '0.23'
-apis: []
+apis:
+  - aid: hpsf:hpsf-events-api
+    name: HPSF Events API
+    description: >-
+      The stable Events Calendar v1 REST API on hpsf.io, serving HPSF's conference and event calendar
+      as JSON - HPSFcon, SC and CppCon listings with start and end dates, timezone details, cost,
+      website, featured image, venue, organizer, categories and tags. Read access is anonymous and
+      keyless; 30 operations are declared across events, venues, organizers, categories and tags, with
+      the write half requiring WordPress Application Passwords. The contract is published live by the
+      host at /wp-json/tribe/events/v1/doc.
+    humanURL: https://hpsf.io/events/
+    baseURL: https://hpsf.io/wp-json/tribe/events/v1
+    tags:
+      - Events
+      - Conferences
+      - Content
+      - Calendar
+    properties:
+      - type: OpenAPI
+        url: openapi/hpsf-events-api-openapi.yml
+      - type: APIReference
+        url: https://hpsf.io/wp-json/tribe/events/v1/doc
+      - type: DataModel
+        url: data-model/hpsf-data-model.yml
+      - type: ErrorCatalog
+        url: errors/hpsf-problem-types.yml
+      - type: Examples
+        url: examples/hpsf-examples.yml
+      - type: Overlay
+        url: overlays/hpsf-events-api-overlay.yaml
+  - aid: hpsf:hpsf-tec-events-api
+    name: HPSF Events Calendar TEC v1 API
+    description: >-
+      The newer Events Calendar tec/v1 REST API on hpsf.io - an OpenAPI 3.0.4 contract with 17
+      operations over events, venues, organizers and recurring series, with named operationIds,
+      declared BasicAuth and machine-readable pagination. The vendor marks these endpoints
+      experimental and the installation enforces it: an anonymous GET without the acknowledgement
+      header returns HTTP 400 missing_experimental_endpoint_acknowledgement, and /series returns 401.
+      Recorded because the contract and the routes are published, not because they answer anonymously.
+    humanURL: https://hpsf.io/events/
+    baseURL: https://hpsf.io/wp-json/tec/v1
+    tags:
+      - Events
+      - Conferences
+      - Content
+      - Calendar
+    properties:
+      - type: OpenAPI
+        url: openapi/hpsf-tec-events-api-openapi.yml
+      - type: APIReference
+        url: https://hpsf.io/wp-json/tec/v1/docs
+      - type: ErrorCatalog
+        url: errors/hpsf-problem-types.yml
+      - type: Overlay
+        url: overlays/hpsf-tec-events-api-overlay.yaml
+  - aid: hpsf:hpsf-site-discovery-api
+    name: HPSF Site Discovery API
+    description: >-
+      The WordPress REST route index at https://hpsf.io/wp-json/ - the anchor the site's RFC 9727
+      /.well-known/api-catalog linkset points at. It returns the site identity, the 15 registered
+      namespaces, 99 route definitions with their methods and argument schemas, and the Application
+      Passwords authorization endpoint. It is the authoritative machine-readable inventory of what
+      this host exposes, and it is also where the absence shows: wp/v2 is listed as a namespace but
+      every wp/v2 route returns rest_no_route 404, and wp-abilities/v1 returns 401.
+    humanURL: https://hpsf.io/
+    baseURL: https://hpsf.io/wp-json
+    tags:
+      - Discovery
+      - Content
+      - WordPress
+    properties:
+      - type: ErrorCatalog
+        url: errors/hpsf-problem-types.yml
+      - type: Examples
+        url: examples/hpsf-examples.yml
 common:
   - type: Website
     url: https://www.hpsf.io/
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/hpsf
+  - type: About
+    url: https://hpsf.io/about/
   - type: Documentation
     name: High Performance Software Foundation Documentation
     description: Official documentation for High Performance Software Foundation.
     url: https://hpsf.io/projects/
-  - type: GitHubOrg
+  - type: APIReference
+    name: HPSF Events API reference (live OpenAPI)
+    description: The OpenAPI document the host serves for its stable events API.
+    url: https://hpsf.io/wp-json/tribe/events/v1/doc
+  - type: GitHubOrganization
     name: High Performance Software Foundation GitHub
-    description: Source code and repositories for High Performance Software Foundation.
-    url: https://github.com/hpsf
-  - url: https://hpsf.io/feed/
-    type: Blog
+    description: The HPSF GitHub organization - charter, TAC, website and working-group repositories.
+    url: https://github.com/hpsfoundation
+  - type: Blog
+    url: https://hpsf.io/blog/
+  - type: BlogRSS
+    url: https://hpsf.io/feed/
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/HPSF
+  - type: Bluesky
+    url: https://bsky.app/profile/hpsf.bsky.social
+  - type: Slack
+    url: https://join.slack.com/t/hpsf/shared_invite/zt-3p95c8ety-_IW77jGKG35KgmFDGuDbsg
+  - type: Support
+    name: Linux Foundation Help Center
+    description: HPSF is a Linux Foundation project; support runs through the LF help center.
+    url: https://helpcenter.linuxfoundation.org/en/
+  - type: Contact
+    url: https://hpsf.io/contact/
+  - type: SignUp
+    name: Become an HPSF member
+    description: LFX enrollment form for HPSF organizational membership.
+    url: https://enrollment.lfx.linuxfoundation.org/?project=hpsf
+  - type: Pricing
+    name: HPSF membership
+    description: Membership tiers - Premier, General and Associate. Dues are not published.
+    url: https://hpsf.io/join/
+  - type: TermsOfService
+    url: https://www.linuxfoundation.org/legal/terms
+  - type: PrivacyPolicy
+    url: https://www.linuxfoundation.org/legal/privacy-policy
+  - type: Charter
+    url: https://github.com/hpsfoundation/foundation/blob/main/charter.md
+  - type: Governance
+    url: https://hpsf.io/tac/
+  - type: WellKnown
+    url: well-known/hpsf-well-known.yml
+  - type: ContentSignal
+    name: HPSF AI usage preference
+    description: >-
+      robots.txt carries Content-Signal - ai-train=yes, search=yes, ai-input=yes.
+    url: https://hpsf.io/robots.txt
+  - type: LLMsTxt
+    url: llms/hpsf-llms.txt
+  - type: Authentication
+    url: authentication/hpsf-authentication.yml
+  - type: Conventions
+    url: conventions/hpsf-conventions.yml
+  - type: Conformance
+    url: conformance/hpsf-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/hpsf-lifecycle.yml
+  - type: ErrorCatalog
+    url: errors/hpsf-problem-types.yml
+  - type: DataModel
+    url: data-model/hpsf-data-model.yml
+  - type: Examples
+    url: examples/hpsf-examples.yml
+  - type: Packages
+    url: packages/hpsf-packages.yml
+  - type: Plans
+    url: plans/hpsf-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/hpsf-rate-limits.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: DomainSecurity
+    url: security/hpsf-domain-security.yml
+  - type: X-MCPServerCandidate
+    url: mcp/hpsf-mcp.yml
 maintainers:
   - FN: Kin Lane
     email: info@apievangelist.com
+x-pointers-deliberately-omitted:
+  note: >-
+    Recorded so a later pass does not read these as gaps this run missed. Each was probed, searched or
+    derived and the underlying thing is genuinely absent, so emitting the pointer would be a false
+    claim made on HPSF's behalf.
+  omitted:
+  - type: SecurityTxt
+    reason: >-
+      /.well-known/security.txt returns HTTP 404 on both hpsf.io and www.hpsf.io. The probe is recorded
+      in well-known/hpsf-well-known.yml; the pointer is not.
+  - type: AgentCard
+    reason: >-
+      /.well-known/agent-card.json and /.well-known/agent.json both return HTTP 404 on both hosts.
+      Never derived. No a2a/ artifact was written.
+  - type: MCPServer
+    reason: >-
+      No MCP server exists - not from HPSF and not from the plugin vendor. mcp/hpsf-mcp.yml carries
+      deployment.mode none and a candidate tool list, so it is pointed at with X-MCPServerCandidate.
+  - type: ToolCrosswalk
+    reason: >-
+      Nothing to cross-walk. A crosswalk binds MCP tools or GraphQL fields to REST operations; HPSF has
+      neither an MCP server nor a GraphQL endpoint (POST https://hpsf.io/graphql returns 404 HTML).
+  - type: SDKs
+    reason: >-
+      npm, PyPI, RubyGems and crates.io searches returned zero first-party packages, and none of the 6
+      repositories in github.com/hpsfoundation is a package. packages/hpsf-packages.yml records
+      package_count 0.
+  - type: Idempotency
+    reason: >-
+      conventions idempotency.coverage is `na`, not `full` or `partial`. Every anonymously reachable
+      operation is a GET; no Idempotency-Key header is accepted, documented or observed.
+  - type: StatusPage
+    reason: >-
+      No status page. The `status` link inside HPSF's own api-catalog linkset points at
+      https://hpsf.io - the homepage - which reports nothing about availability.
+  - type: Deprecation
+    reason: >-
+      No deprecation policy for the API, and no Sunset or Deprecation header on any observed response.
+      The published lifecycle_policy.md governs PROJECT stages, not API versions, and is recorded in
+      lifecycle/hpsf-lifecycle.yml under project_lifecycle rather than claimed as an API policy.
+  - type: Security
+    reason: >-
+      0-working/probe-security-programs.py returned vdp=none trust=none. No vulnerability-disclosure
+      policy, no bug bounty, no security contact.
+  - type: Compliance
+    reason: No certification, audit report or trust center is published.
+  - type: AsyncAPI
+    reason: >-
+      /asyncapi.yaml and /asyncapi.json both 404, and none of the 99 routes is an event stream.
+      asyncapi/hpsf-event-surface.yml records the absence.
+  - type: Webhooks
+    reason: >-
+      There is no webhook surface. The tribe/zapier/v1 and tribe/power-automate/v1 namespaces are
+      credential-gated POLLING triggers - the consumer asks what changed; nothing on this host calls
+      back. Emitting Webhooks would invert the direction the pointer exists to record.
+  - type: ChangeLog
+    reason: >-
+      No dated changelog for the API or the site. The blog is foundation news and is wired as
+      Blog/BlogRSS.
+  - types: [DeveloperPortal, GettingStarted, Sandbox, CLI, Postman, Roadmap, OAuthScopes, Protobuf, WSDL,
+      Components, DeclineCodes, TrustCenter, Vocabulary, Rules]
+    reason: >-
+      None of these exists. HPSF runs no developer program: no portal, no quickstart, no console or
+      sandbox, no CLI, no public Postman collection, no published roadmap. There is no oauth2
+      securityScheme anywhere (so no scopes to derive), no gRPC and no SOAP - `?wsdl` on both hosts
+      returns the WordPress JSON root or the HTML homepage, never a WSDL. No embeddable components,
+      no payment surface, no trust center, no vocabulary and no Spectral ruleset.
+x-enrichment:
+  date: '2026-09-13'
+  status: enriched
+  artifacts_added: 31
+  pass: local-v3
