@@ -2,6 +2,20 @@
   "repo": "hpsf",
   "feeds": [
     {
+      "source": "https://hpsf.io/blog/",
+      "feed_url": "https://hpsf.io/blog/feed/",
+      "title": "",
+      "saved": 0,
+      "method": "discovered"
+    },
+    {
+      "source": "https://github.com/hpsfoundation",
+      "feed_url": "https://github.com/hpsfoundation",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    },
+    {
       "source": "https://hpsf.io/feed/",
       "feed_url": "https://hpsf.io/feed/",
       "title": "",
@@ -9,7 +23,7 @@
       "method": "feed"
     }
   ],
-  "fetched": "2026-09-06T19:17:18Z",
+  "fetched": "2026-09-13T13:00:00Z",
   "post_count": 21,
   "feed_nature": "vendor-blog",
   "feed_nature_basis": "path_blog",
