@@ -9,11 +9,11 @@
       "method": "discovered"
     },
     {
-      "source": "https://github.com/hpsfoundation",
-      "feed_url": "https://github.com/hpsfoundation",
+      "source": "https://hpsf.io/feed/",
+      "feed_url": "https://hpsf.io/feed/",
       "title": "",
       "saved": 0,
-      "method": "none"
+      "method": "feed"
     },
     {
       "source": "https://hpsf.io/blog/feed/",
@@ -23,14 +23,14 @@
       "method": "feed"
     },
     {
-      "source": "https://hpsf.io/feed/",
-      "feed_url": "https://hpsf.io/feed/",
+      "source": "https://github.com/hpsfoundation",
+      "feed_url": "https://github.com/hpsfoundation",
       "title": "",
       "saved": 0,
-      "method": "feed"
+      "method": "none"
     }
   ],
-  "fetched": "2026-10-03T12:30:02Z",
+  "fetched": "2026-10-10T13:15:00Z",
   "post_count": 26,
   "feed_nature": "vendor-blog",
   "feed_nature_basis": "path_blog",
