@@ -1,4 +1,4 @@
-# High Performance Software Foundation (hpsf)
+# High Performance Software Foundation
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,95 +64,117 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-The High Performance Software Foundation (HPSF) is a Linux Foundation project and neutral hub for open
-source high performance computing software, founded in 2024 and governed by a Governing Board, a
-Technical Advisory Council (TAC) and an Outreach Committee. It hosts a portable core software stack for
-HPC — including Spack, Kokkos, Apptainer, E4S, HPX, Charliecloud, Chapel, Viskores, Flux Framework and
-Wi4MPI — across Core, Established and Emerging project stages, and runs HPSFcon alongside a presence at
-SC and CppCon.
+The High Performance Software Foundation (HPSF) is a Linux Foundation project and neutral hub for open source high performance computing software, founded in 2024 and governed by a Governing Board, a Technical Advisory Council (TAC) and an Outreach Committee. HPSF hosts and supports a portable core software stack for HPC - including Spack, Kokkos, Apptainer, E4S, HPX, Charliecloud, Chapel, Viskores, Flux Framework and Wi4MPI - across Core, Established and Emerging project stages, and runs HPSFcon alongside a presence at SC and CppCon. Organizations join at Premier, General or Associate tier; projects apply to the TAC. HPSF publishes no developer program and ships no SDKs, but hpsf.io is a machine-readable surface in its own right: it serves an RFC 9727 /.well-known/api-catalog linkset, an llms.txt, a Content-Signal AI usage preference in robots.txt, and two live OpenAPI documents describing a publicly callable events API covering HPSF conferences, venues, organizers and event taxonomies. The WordPress wp/v2 content routes are advertised in the namespace list but are disabled on this installation.
 
-**URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/hpsf/refs/heads/main/apis.yml)
+**Areas:** HPC · Linux Foundation · Open Source · Scientific Computing · Foundations · Supercomputing · Open Governance · Event · Conferences · Research Computing · Non-Profit
 
-## Scope
+## High Performance Software Foundation on APIs.io
 
-- **Type:** Index
-- **Position:** Producing
-- **Access:** 3rd-Party
+Everything profiled for High Performance Software Foundation is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/hpsf/](https://apis.io/providers/hpsf/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (1)
 
-- HPC
-- Linux Foundation
-- Open Source
-- Scientific Computing
-- Foundation
-- Supercomputing
-- Open Governance
-- Events
-- Conferences
-- Research Computing
-- Nonprofit
-- Content
+- [High Performance Software Foundation Website (WordPress REST)](https://apis.io/apis/hpsf/hpsf-io-website-wordpress-rest/) — The public WordPress REST API (wp-json) of the High Performance Software Foundation website at hpsf.io: the route index of the site's content management…
 
-## Timestamps
+### Published properties
 
-- **Created:** 2026-03-16
-- **Modified:** 2026-09-13
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### AsyncAPI (1)
 
-HPSF runs no developer program — no portal, no API key, no SDK, no documentation page — but `hpsf.io`
-is a machine-readable surface in its own right, and an earlier version of this profile recorded it as
-having none. What it actually publishes, all verified live on 2026-09-13:
+Event-driven and webhook contracts.
 
-- **An RFC 9727 `/.well-known/api-catalog`** linkset (HTTP 200, `application/linkset+json`) anchoring
-  the WordPress REST API at `https://hpsf.io/wp-json/`. Confirmed a real document rather than a
-  catch-all: every other well-known path, including a negative-control path that cannot exist, 404s.
-- **Two live OpenAPI documents the host serves itself** — `/wp-json/tribe/events/v1/doc` (OpenAPI
-  3.0.0, 14 paths / 30 operations) and `/wp-json/tec/v1/docs` (OpenAPI 3.0.4, 8 paths / 17
-  operations). Both name `https://hpsf.io` in `servers[]`.
-- **An `llms.txt`** (HTTP 200) listing HPSF's posts, pages, projects, venues, organizers, events and
-  project stages.
-- **A Content Signals directive in `robots.txt`** — `ai-train=yes, search=yes, ai-input=yes` — HPSF's
-  own machine-readable AI usage preference.
-- **An RFC 5545 iCalendar feed** at `/events/?ical=1`, which for a calendar consumer is the most
-  directly useful thing on the host.
+- [Hpsf Event Surface](https://apis.io/asyncapis/hpsf/hpsf-event-surface/)
 
-Three API entries are recorded: the **HPSF Events API** (`tribe/events/v1`, anonymous and keyless —
-the events, venues and organizers behind HPSFcon), the **HPSF Events Calendar TEC v1 API**
-(`tec/v1`, contract published but vendor-flagged experimental), and the **HPSF Site Discovery API**
-(the `/wp-json/` route index).
+#### MCP servers (1)
 
-Two honest negatives are recorded alongside them, because both are advertised and neither works:
+Model Context Protocol servers that expose the API to agents.
 
-- **`wp/v2` is declared in the namespace list at `/wp-json/` and is absent from that same document's
-  route map.** Every `wp/v2` path returns `rest_no_route` 404. The WordPress content API is not served
-  on this installation.
-- **Every `tec/v1` route returns HTTP 400 `missing_experimental_endpoint_acknowledgement`** to an
-  anonymous caller, and the required header is named neither in the contract the host serves nor
-  anywhere on hpsf.io. The richer of the two contracts describes a surface a third party cannot invoke.
+- [HPSF MCP server (candidate)](https://apis.io/servers/hpsf/hpsf-mcp-server-candidate/)
 
-HPSF publishes no SDK, no CLI, no MCP server, no agent card, no webhook surface and no `security.txt`.
-The contracts are authored by The Events Calendar plugin rather than by HPSF; they are recorded as
-HPSF's because `servers[]` names HPSF's own host and the data described is HPSF's own — the
-self-hosted case, not a sibling-product mix-up.
+#### Security (2)
 
-## Common Properties
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Hpsf Authentication](https://apis.io/security/hpsf/hpsf-authentication/)
+- [Hpsf Domain Security](https://apis.io/security/hpsf/hpsf-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Hpsf Plans Pricing](https://apis.io/plans/hpsf/hpsf-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Hpsf Rate Limits](https://apis.io/rate-limits/hpsf/hpsf-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
 - [Website](https://www.hpsf.io/)
 - [Documentation](https://hpsf.io/projects/)
-- [API Reference (live OpenAPI)](https://hpsf.io/wp-json/tribe/events/v1/doc)
-- [GitHub Organization](https://github.com/hpsfoundation)
+- [API reference](https://hpsf.io/wp-json/tribe/events/v1/doc)
+- [Pricing](https://hpsf.io/join/)
+- [Sign up](https://enrollment.lfx.linuxfoundation.org/?project=hpsf)
+- [Support](https://helpcenter.linuxfoundation.org/en/)
 - [Blog](https://hpsf.io/blog/)
-- [TAC / Governance](https://hpsf.io/tac/)
-- [Charter](https://github.com/hpsfoundation/foundation/blob/main/charter.md)
-- [Join / Membership](https://hpsf.io/join/)
+- [Terms of service](https://www.linuxfoundation.org/legal/terms)
+- [Privacy policy](https://www.linuxfoundation.org/legal/privacy-policy)
+- [GitHub](https://github.com/hpsfoundation)
 
-> Note: `https://github.com/hpsf` is an empty placeholder organization with zero repositories and is
-> **not** HPSF's. This profile previously pointed at it; the real org is
-> [`hpsfoundation`](https://github.com/hpsfoundation).
+## API Evangelist rating
 
-## Maintainers
+**Kin Score 37.8** — thin · rubric 0.24.0 · scored 2026-10-17
 
-- **FN:** Kin Lane
-- **Email:** info@apievangelist.com
+| Facet | Score |
+|---|---|
+| Discoverability | 64.3 |
+| Contract quality | 45.3 |
+| Contract governance | 18.2 |
+| Operational transparency | 5.3 |
+| Developer ergonomics | 37.5 |
+| Access clarity | 44.7 |
+
+**Agent readiness 30.2** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | documented (partial credit) |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | yes |
+| Consent Identity | yes |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 24.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/hpsf/](https://apis.io/providers/hpsf/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for High Performance Software Foundation: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/hpsf/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
